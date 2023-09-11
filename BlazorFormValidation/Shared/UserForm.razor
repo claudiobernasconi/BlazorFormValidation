@@ -43,6 +43,7 @@
     public class User
     {
         [Required]
+        [SupportedUsername]
         [StringLength(16, MinimumLength = 4, ErrorMessage = "The username must be between 4 and 16 characters.")]
         public string? Username { get; set; }
 
