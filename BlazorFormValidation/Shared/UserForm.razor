@@ -1,0 +1,57 @@
+﻿@using System.ComponentModel.DataAnnotations;
+
+<h3>User Registration</h3>
+
+<EditForm Model="@UserModel" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label style="width: 200px">
+            Username:
+            <InputText @bind-Value="UserModel!.Username" />
+        </label>
+    </div>
+    <div>
+        <label style="width: 200px">
+            Password:
+            <InputText type="password" @bind-Value="UserModel!.Password" />
+        </label>
+    </div>
+    <div>
+        <label style="width: 200px">
+            Password Confirmation:
+            <InputText type="password" @bind-Value="UserModel!.PasswordConfirmation" />
+        </label>
+    </div>
+    <div style="margin-top: 10px;">
+        <button type="submit">Register</button>
+    </div>
+</EditForm>
+
+@code {
+    public User? UserModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        UserModel = new User();
+    }
+
+    public void Submit()
+    {
+    }
+
+    public class User
+    {
+        [Required]
+        [StringLength(16, MinimumLength = 4, ErrorMessage = "The username must be between 4 and 16 characters.")]
+        public string? Username { get; set; }
+
+        [Required]
+        [StringLength(24, MinimumLength = 10, ErrorMessage = "The password must be between 10 and 24 characters.")]
+        public string? Password { get; set; }
+
+        [Required]
+        [StringLength(24, MinimumLength = 10, ErrorMessage = "The password must be between 10 and 24 characters.")]
+        public string? PasswordConfirmation { get; set; }
+    }
+}
