@@ -42,6 +42,8 @@
 
         EditContext.OnValidationRequested += HandleValidationRequested;
         EditContext.OnFieldChanged += HandleFieldChanged;
+
+        EditContext.SetFieldCssClassProvider(new CustomFieldClassProvider());
     }
 
     private void HandleValidationRequested(object? sender, ValidationRequestedEventArgs args)
@@ -85,5 +87,14 @@
         [Required]
         [StringLength(24, MinimumLength = 10, ErrorMessage = "The password must be between 10 and 24 characters.")]
         public string? PasswordConfirmation { get; set; }
+    }
+
+    public class CustomFieldClassProvider : FieldCssClassProvider
+    {
+        public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
+        {
+            var isValid = !editContext.GetValidationMessages(fieldIdentifier).Any();
+            return isValid ? "valid-field" : "invalid-field";
+        }
     }
 }

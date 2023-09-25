@@ -66,3 +66,11 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.valid-field {
+    border: 5px dotted yellow;
+}
+
+.invalid-field {
+    border: 5px dashed orange;
+}
