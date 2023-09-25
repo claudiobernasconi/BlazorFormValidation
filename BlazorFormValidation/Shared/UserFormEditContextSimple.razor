@@ -1,0 +1,89 @@
+﻿@using System.ComponentModel.DataAnnotations;
+
+<h3>User Registration</h3>
+
+<EditForm EditContext="@EditContext" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label style="width: 200px">
+            Username:
+            <InputText @bind-Value="UserModel!.Username" />
+        </label>
+    </div>
+    <div>
+        <label style="width: 200px">
+            Password:
+            <InputText type="password" @bind-Value="UserModel!.Password" />
+        </label>
+    </div>
+    <div>
+        <label style="width: 200px">
+            Password Confirmation:
+            <InputText type="password" @bind-Value="UserModel!.PasswordConfirmation" />
+        </label>
+    </div>
+    <div style="margin-top: 10px;">
+        <button type="submit">Register</button>
+    </div>
+</EditForm>
+
+@code {
+    public User? UserModel { get; set; }
+    public EditContext? EditContext { get; set; }
+    public ValidationMessageStore? MessageStore;
+
+    protected override void OnInitialized()
+    {
+        UserModel = new User();
+
+        EditContext = new EditContext(UserModel);
+        MessageStore = new ValidationMessageStore(EditContext);
+
+        EditContext.OnValidationRequested += HandleValidationRequested;
+        EditContext.OnFieldChanged += HandleFieldChanged;
+    }
+
+    private void HandleValidationRequested(object? sender, ValidationRequestedEventArgs args)
+    {
+        MessageStore?.Clear();
+
+        if (UserModel?.PasswordConfirmation != UserModel?.Password)
+        {
+            MessageStore?.Add(() => UserModel.PasswordConfirmation, "Passwords do not match.");
+            EditContext?.NotifyValidationStateChanged();
+        }
+    }
+
+    private void HandleFieldChanged(object? sender, FieldChangedEventArgs args)
+    {
+        MessageStore?.Clear();
+
+        if (UserModel?.PasswordConfirmation != UserModel?.Password && 
+            UserModel?.PasswordConfirmation?.Length > 0)
+        {
+            MessageStore?.Add(() => UserModel.PasswordConfirmation, "Passwords do not match.");
+            EditContext?.NotifyValidationStateChanged();
+        }
+    }
+
+    public void Submit()
+    {
+    }
+
+    public class User
+    {
+        [Required]
+        [SupportedUsername]
+        [StringLength(16, MinimumLength = 4, ErrorMessage = "The username must be between 4 and 16 characters.")]
+        public string? Username { get; set; }
+
+        [Required]
+        [StringLength(24, MinimumLength = 10, ErrorMessage = "The password must be between 10 and 24 characters.")]
+        public string? Password { get; set; }
+
+        [Required]
+        [StringLength(24, MinimumLength = 10, ErrorMessage = "The password must be between 10 and 24 characters.")]
+        public string? PasswordConfirmation { get; set; }
+    }
+}
