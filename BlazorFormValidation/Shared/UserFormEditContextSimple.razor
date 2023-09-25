@@ -24,7 +24,7 @@
         </label>
     </div>
     <div style="margin-top: 10px;">
-        <button type="submit">Register</button>
+        <button type="submit" disabled="@(!EditContext?.Validate())">Register</button>
     </div>
 </EditForm>
 
